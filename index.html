@@ -1,69 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YUPI GLOBAL - Boutique Officielle</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Web – Blog</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-
-    <nav class="navbar">
-        <div class="logo">
-            <img src="https://i.postimg.cc/59358DWz/1738050237751.png" alt="YUPI Logo">
-            <span>YUPI <span class="red">GLOBAL</span></span>
-        </div>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="#about">À Propos</a></li>
-            <li><a href="https://wa.me/2290143718055" target="_blank">Contact</a></li>
-            <li><a href="#testimonials">Témoignages</a></li>
-            <li><a href="https://www.ecompluspro.online/" target="_blank" class="partner-btn">Partenariat</a></li>
-        </ul>
-        <div class="cart-icon" onclick="toggleCart()">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cart-count">0</span>
-        </div>
-        <div class="hamburger" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
+  <header class="header">
+    <h1>Digital Web</h1>
+    <p class="subtitle">Marketing digital • Sites web • Funnels • Publicité</p>
+    <nav>
+      <a href="#articles">Articles</a>
+      <a href="#contact">Contact</a>
+      <a class="whatsapp" href="https://wa.me/2290143718055" target="_blank">WhatsApp</a>
     </nav>
+  </header>
 
-    <header id="about" class="hero">
-        <div class="hero-content">
-            <h1>Youth Up for Personal Independence</h1>
-            <p class="vision">"Éveiller le potentiel de chaque jeune pour atteindre une indépendance financière, émotionnelle et physique."</p>
-            <div class="company-details">
-                <p><strong>YUPI GLOBAL</strong> est une organisation engagée dans l'émancipation à travers la sagesse ayurvédique et l'innovation. Nos produits naturels sont conçus pour transformer votre santé et booster votre leadership.</p>
-            </div>
-            <a href="#grid-boutique" class="btn-main">Découvrir la Boutique</a>
-        </div>
-    </header>
+  <main id="app"></main>
 
-    <section id="shop">
-        <h2 class="section-title">NOS SOLUTIONS <span class="red">SANTÉ</span></h2>
-        <div class="product-grid" id="grid-boutique"></div>
-    </section>
+  <footer class="footer">
+    <p>© <span id="year"></span> Digital Web — Eric Barbeau</p>
+  </footer>
 
-    <section id="product-detail-page" class="hidden">
-        <button onclick="hideDetails()" class="back-btn"><i class="fas fa-arrow-left"></i> Retour</button>
-        <div id="detail-content"></div>
-    </section>
-
-    <div id="side-cart" class="side-cart">
-        <div class="cart-header">
-            <h3>Mon Panier</h3>
-            <span class="close-cart" onclick="toggleCart()">&times;</span>
-        </div>
-        <div id="cart-items"></div>
-        <div class="cart-footer">
-            <div class="total-box">TOTAL: <span id="cart-total">0</span> XOF</div>
-            <button onclick="envoyerPanierWhatsApp()" class="whatsapp-send">Commander via WhatsApp</button>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
+  <script src="index.js"></script>
 </body>
 </html>
