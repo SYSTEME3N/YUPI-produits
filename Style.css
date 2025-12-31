@@ -1,0 +1,172 @@
+/* --- CONFIGURATION NAVBAR --- */
+.yupi-nav {
+    background-color: #000033;
+    border-bottom: 2px solid #fde047;
+    height: 70px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* BRAND (Logo + Titre) */
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-logo {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    background: white;
+    padding: 2px;
+}
+
+.nav-title {
+    font-weight: 900;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}
+
+.red-text { color: #FF0000; }
+
+/* MENU DESKTOP */
+.nav-menu-desktop {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.nav-link:hover { color: #fde047; }
+
+.btn-partner {
+    background: #fde047;
+    color: #000033;
+    padding: 8px 18px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+/* PANIER */
+.nav-cart {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: #fde047;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: #FF0000;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* HAMBURGER (Mobile uniquement) */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+}
+
+/* SIDEBAR MOBILE */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px; /* Caché par défaut */
+    width: 280px;
+    height: 100%;
+    background: #000022;
+    z-index: 2000;
+    transition: 0.4s ease;
+    padding: 20px;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+}
+
+.sidebar.active { left: 0; }
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.sidebar-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .nav-menu-desktop { display: none; }
+    .hamburger { display: flex; }
+    .nav-container { justify-content: space-between; }
+}
+
+#sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1500;
+}
+
+#sidebar-overlay.active { display: block; }
