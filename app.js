@@ -76,26 +76,12 @@ const produits = [
         "Combat les bouffées de chaleur (ménopause)",
         "Améliore la vitalité et l'humeur"
     ] },
-    { id: 12, nom: "HERBAL TEA", prix: 11250, img: "https://i.postimg.cc/FsR5NgsZ/yupi-drink-coffee-1.png", roles: [
-        "Favorise la digestion et détoxifie l'organisme", 
-        "Améliore le métabolisme", 
-        "Propriétés relaxantes et apaisantes", 
-        "Renforce le système immunitaire",
-        "Réduit le stress quotidien"
-    ] },
     { id: 13, nom: "PILON CARE", prix: 15750, img: "https://i.postimg.cc/tgg2VDwm/Pilon-care.png", roles: [
         "Soutient et protège la santé de la prostate", 
         "Améliore le flux et le confort urinaire", 
         "Réduit les inflammations de la zone pelvienne", 
         "Prévient les troubles urinaires liés à l'âge",
         "Action drainante et purifiante"
-    ] },
-    { id: 14, nom: "ENERGY CAPSULE", prix: 13125, img: "https://i.postimg.cc/FsR5NgsZ/yupi-drink-coffee-1.png", roles: [
-        "Augmente l'énergie et la concentration", 
-        "Réduit la fatigue mentale et physique", 
-        "Soutient la vitalité quotidienne", 
-        "Améliore la performance sportive",
-        "Favorise le bien-être général"
     ] },
     { id: 15, nom: "YUPI DRINK COFFEE", prix: 13125, img: "https://i.postimg.cc/FsR5NgsZ/yupi-drink-coffee-1.png", roles: [
         "Boisson énergisante naturelle aux extraits de plantes",
@@ -106,27 +92,73 @@ const produits = [
     ] }
 ];
 
-// FONCTION CRUCIALE : Charger les produits une fois que le DOM est prêt
+let panier = [];
+let tempQty = 1;
+
+// 1. CHARGEMENT DE LA BOUTIQUE
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('grid-boutique');
-    
-    // Si la grille n'existe pas dans le HTML, on arrête pour éviter l'erreur
-    if (!grid) {
-        console.error("Erreur : L'élément avec l'ID 'grid-boutique' est introuvable dans votre HTML.");
-        return;
+    if (grid) {
+        grid.innerHTML = "";
+        produits.forEach(p => {
+            grid.innerHTML += `
+                <div class="card">
+                    <img src="${p.img}" alt="${p.nom}" style="border-radius:10px; margin-bottom:10px; width:100%;">
+                    <h3 class="title">${p.nom}</h3>
+                    <div><button class="btn-info" onclick="voirRoles(${p.id})">RÔLES & BIENFAITS</button></div>
+                    <div class="price-box">${p.prix.toLocaleString()} XOF</div>
+                    <button class="btn-buy" onclick="ouvrirCommande(${p.id})">COMMANDER</button>
+                </div>`;
+        });
     }
-
-    // Vider la grille avant d'ajouter (évite les doublons)
-    grid.innerHTML = "";
-
-    produits.forEach(p => {
-        grid.innerHTML += `
-            <div class="card">
-                <img src="${p.img}" alt="${p.nom}" style="border-radius:10px; margin-bottom:10px; width:100%;">
-                <h3 class="title">${p.nom}</h3>
-                <div><button class="btn-info" onclick="voirRoles(${p.id})">RÔLES & BIENFAITS</button></div>
-                <div class="price-box">${p.prix.toLocaleString()} XOF</div>
-                <button class="btn-buy" onclick="ouvrirCommande(${p.id})">COMMANDER</button>
-            </div>`;
-    });
 });
+
+// 2. FONCTION POUR LES RÔLES (Pop-up)
+window.voirRoles = function(id) {
+    const p = produits.find(x => x.id === id);
+    if(p) {
+        document.getElementById('roleTitle').innerText = p.nom;
+        document.getElementById('roleBody').innerHTML = '<ul>' + p.roles.map(r => `<li>${r}</li>`).join('') + '</ul>';
+        document.getElementById('modalRoles').style.display = 'flex';
+    }
+};
+
+// 3. FONCTION POUR COMMANDER (Pop-up quantité)
+window.ouvrirCommande = function(id) {
+    const p = produits.find(x => x.id === id);
+    if(p) {
+        tempQty = 1; 
+        document.getElementById('qty-val').innerText = tempQty;
+        document.getElementById('qtyProdName').innerText = p.nom;
+        document.getElementById('confirmAddBtn').onclick = () => { ajouterPanier(p, tempQty); fermerModals(); };
+        document.getElementById('modalQty').style.display = 'flex';
+    }
+};
+
+// 4. AUTRES FONCTIONS INDISPENSABLES
+window.fermerModals = function() {
+    document.getElementById('modalRoles').style.display = 'none';
+    document.getElementById('modalQty').style.display = 'none';
+    if(document.getElementById('modalCart')) document.getElementById('modalCart').style.display = 'none';
+};
+
+window.changeQtyVal = function(d) {
+    tempQty = Math.max(1, tempQty + d);
+    document.getElementById('qty-val').innerText = tempQty;
+};
+
+function ajouterPanier(p, q) {
+    const ex = panier.find(i => i.id === p.id);
+    if(ex) ex.qty += q; else panier.push({...p, qty: q});
+    majUI();
+}
+
+function majUI() {
+    const count = panier.reduce((a, b) => a + b.qty, 0);
+    const total = panier.reduce((a, b) => a + (b.prix * b.qty), 0);
+    if(document.getElementById('cart-count')) document.getElementById('cart-count').innerText = count;
+    if(document.getElementById('cart-total')) document.getElementById('cart-total').innerText = total.toLocaleString();
+    if(document.getElementById('yupi-cart-status')) {
+        document.getElementById('yupi-cart-status').style.display = count > 0 ? 'block' : 'none';
+    }
+        }
