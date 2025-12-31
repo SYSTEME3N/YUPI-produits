@@ -3,24 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Digital Web – Blog</title>
+  <title>Digital Web | Expert Marketing & Web</title>
   <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="header">
-    <h1>Digital Web</h1>
-    <p class="subtitle">Marketing digital • Sites web • Funnels • Publicité</p>
-    <nav>
-      <a href="#articles">Articles</a>
-      <a href="#contact">Contact</a>
-      <a class="whatsapp" href="https://wa.me/2290143718055" target="_blank">WhatsApp</a>
-    </nav>
+    <div class="container nav-flex">
+      <div class="logo" onclick="goArticles()">Digital<span>Web</span></div>
+      <nav>
+        <a href="#articles">Articles</a>
+        <a href="#contact">Contact</a>
+        <a class="btn-wa" href="https://wa.me/2290143718055" target="_blank">WhatsApp</a>
+      </nav>
+    </div>
   </header>
 
-  <main id="app"></main>
+  <main id="app" class="container"></main>
 
   <footer class="footer">
-    <p>© <span id="year"></span> Digital Web — Eric Barbeau</p>
+    <p>© <span id="year"></span> Digital Web — <strong>Eric Barbeau</strong></p>
   </footer>
 
   <script src="index.js"></script>
