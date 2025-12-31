@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YUPI GLOBAL - Boutique</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="yupi-global-site">
+
+    <header>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="yupi-logo-circle">
+                <img src="https://i.postimg.cc/59358DWz/1738050237751.png" alt="Logo Yupi">
+            </div>
+            <h1>YUPI <span style="color: #FF0000;">GLOBAL</span></h1>
+        </div>
+    </header>
+
+    <div id="yupi-premium-hero">
+        <div style="max-width: 800px; margin: auto; padding: 40px 20px; text-align: center;">
+            <div class="trust-badge">
+                <span style="color: #25D366; font-size: 0.6rem;">●</span>
+                <span>Santé Ayurvédique Officielle</span>
+            </div>
+            <h2>Élevez votre <span style="color: #fde047;">Énergie Vitale</span><br>
+                <span style="color: #cccccc;">Vivez sans limites.</span>
+            </h2>
+            <a href="#yupi-boutique-pro" class="cta-main">Boutique 🛍️</a>
+        </div>
+    </div>
+
+    <div id="yupi-boutique-pro">
+        <h2>VOTRE SANTÉ, NOTRE <span style="color: #FF0000;">PRIORITÉ</span></h2>
+        <div class="product-grid" id="grid-boutique"></div>
+    </div>
+
+    <div id="yupi-cart-status" onclick="ouvrirRecapPanier()">
+        🛒 Panier (<span id="cart-count">0</span>) | <span id="cart-total">0</span> XOF
+    </div>
+
+    <!-- Modals -->
+    <div id="modalRoles" class="yupi-modal">
+        <div class="modal-content">
+            <h3 id="roleTitle"></h3>
+            <div id="roleBody"></div>
+            <button onclick="fermerModals()">FERMER</button>
+        </div>
+    </div>
+
+    <div id="modalQty" class="yupi-modal">
+        <div class="modal-content">
+            <h3>COMMANDER</h3>
+            <p id="qtyProdName"></p>
+            <div class="qty-box">
+                <button class="q-btn" onclick="changeQtyVal(-1)">-</button>
+                <span id="qty-val">1</span>
+                <button class="q-btn" onclick="changeQtyVal(1)">+</button>
+            </div>
+            <button id="confirmAddBtn">Ajouter au panier</button>
+            <p onclick="fermerModals()">Annuler</p>
+        </div>
+    </div>
+
+    <div id="modalCart" class="yupi-modal">
+        <div class="modal-content">
+            <h3>MON PANIER</h3>
+            <div id="cartListBody"></div>
+            <div>TOTAL: <span id="recapTotal">0</span> XOF</div>
+            <button onclick="envoyerPanierWhatsApp()">🚀 VALIDER LA COMMANDE</button>
+            <p onclick="fermerModals()">Continuer mes achats</p>
+        </div>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+  </html>
