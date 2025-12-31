@@ -76,7 +76,7 @@ const produits = [
         "Combat les bouffées de chaleur (ménopause)",
         "Améliore la vitalité et l'humeur"
     ] },
-    { id: 12, nom: "HERBAL TEA", prix: 11250, img: "https://i.postimg.cc/xyz123/herbal-tea.jpg", roles: [
+    { id: 12, nom: "HERBAL TEA", prix: 11250, img: "https://i.postimg.cc/FsR5NgsZ/yupi-drink-coffee-1.png", roles: [
         "Favorise la digestion et détoxifie l'organisme", 
         "Améliore le métabolisme", 
         "Propriétés relaxantes et apaisantes", 
@@ -90,7 +90,7 @@ const produits = [
         "Prévient les troubles urinaires liés à l'âge",
         "Action drainante et purifiante"
     ] },
-    { id: 14, nom: "ENERGY CAPSULE", prix: 13125, img: "https://i.postimg.cc/abc456/energy-capsule.jpg", roles: [
+    { id: 14, nom: "ENERGY CAPSULE", prix: 13125, img: "https://i.postimg.cc/FsR5NgsZ/yupi-drink-coffee-1.png", roles: [
         "Augmente l'énergie et la concentration", 
         "Réduit la fatigue mentale et physique", 
         "Soutient la vitalité quotidienne", 
@@ -105,3 +105,28 @@ const produits = [
         "Alternative saine aux boissons caféinées classiques"
     ] }
 ];
+
+// FONCTION CRUCIALE : Charger les produits une fois que le DOM est prêt
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('grid-boutique');
+    
+    // Si la grille n'existe pas dans le HTML, on arrête pour éviter l'erreur
+    if (!grid) {
+        console.error("Erreur : L'élément avec l'ID 'grid-boutique' est introuvable dans votre HTML.");
+        return;
+    }
+
+    // Vider la grille avant d'ajouter (évite les doublons)
+    grid.innerHTML = "";
+
+    produits.forEach(p => {
+        grid.innerHTML += `
+            <div class="card">
+                <img src="${p.img}" alt="${p.nom}" style="border-radius:10px; margin-bottom:10px; width:100%;">
+                <h3 class="title">${p.nom}</h3>
+                <div><button class="btn-info" onclick="voirRoles(${p.id})">RÔLES & BIENFAITS</button></div>
+                <div class="price-box">${p.prix.toLocaleString()} XOF</div>
+                <button class="btn-buy" onclick="ouvrirCommande(${p.id})">COMMANDER</button>
+            </div>`;
+    });
+});
