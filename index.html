@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YUPI PRODUITS | Officiel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --jaune: #fde047; --orange: #FF8C00; --bleu: #0000FF; --blanc: #ffffff; --noir: #000000; --rouge: #FF0000; }
+        * { box-sizing: border-box; }
+        body { background: var(--noir); color: var(--blanc); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding-bottom: 80px; }
+        
+        /* NAVIGATION */
+        nav { background: #000; border-bottom: 2px solid var(--orange); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--jaune); cursor: pointer; }
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        .view { display: none; } .active { display: block; }
+
+        /* BOUTIQUE */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .card { background: #111; border: 1px solid #222; border-radius: 15px; padding: 20px; text-align: center; }
+        .card img { width: 100%; height: 230px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
+        .btn-roles-red { background: var(--rouge); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 800; width: 100%; cursor: pointer; text-transform: uppercase; }
+
+        /* DETAILS */
+        .bienfaits-list { background: #111; padding: 20px; border-radius: 10px; border-left: 4px solid var(--bleu); text-align: left; line-height: 1.6; }
+        .maladies-box { background: #331100; padding: 20px; border-radius: 10px; border: 1px dashed var(--jaune); margin: 20px 0; }
+        
+        /* PANIER FIXE */
+        .cart-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--jaune); color: #000; padding: 15px; display: flex; justify-content: space-around; align-items: center; font-weight: 800; z-index: 2000; }
+
+        /* ADMIN STYLE */
+        .admin-form { background: #111; padding: 20px; border-radius: 15px; border: 1px solid var(--orange); margin-bottom: 30px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; color: #fff; border: 1px solid #444; border-radius: 5px; }
+        .btn-adm { padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .btn-save { background: #25D366; color: white; }
+        .btn-del { background: var(--rouge); color: white; }
+        .order-card { background: #1a1a1a; padding: 15px; margin-bottom: 10px; border-left: 5px solid var(--jaune); }
+    </style>
+</head>
+<body>
+
+<nav><div class="logo" onclick="window.location.href='index.html'">YUPI PRODUITS</div></nav>
+
+<div class="container">
+    <div id="admin-login" class="view">
+        <div style="max-width:400px; margin:100px auto; text-align:center;">
+            <h2>Accès Panel Administrateur</h2>
+            <input type="password" id="pass-field" placeholder="Entrez le code secret">
+            <button class="btn-adm btn-save" style="width:100%" onclick="verifyPass()">Connexion</button>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="view">
+        <h1 style="color:var(--jaune)">Gestion Boutique & Commandes</h1>
+        <div class="admin-form">
+            <h3 id="form-title">Ajouter / Modifier un Produit</h3>
+            <input type="hidden" id="edit-id">
+            <input type="text" id="adm-nom" placeholder="Nom du produit">
+            <input type="number" id="adm-prix" placeholder="Prix XOF">
+            <input type="text" id="adm-img" placeholder="URL de l'image">
+            <textarea id="adm-roles" placeholder="Rôles (séparés par des virgules)"></textarea>
+            <textarea id="adm-maladies" placeholder="Maladies cibles"></textarea>
+            <button class="btn-adm btn-save" id="btn-action" onclick="saveProduct()">AJOUTER LE PRODUIT</button>
+            <button class="btn-adm" onclick="resetForm()" style="background:#555; color:white;">ANNULER</button>
+        </div>
+
+        <h3>📦 Commandes Reçues</h3>
+        <div id="admin-orders"></div>
+
+        <h3 style="margin-top:40px;">🛠️ Liste des Produits (Modifier/Supprimer)</h3>
+        <div id="admin-products-list"></div>
+    </div>
+
+    <div id="home" class="view active">
+        <h1 style="text-align:center; color: var(--jaune);">Solutions Ayurvédiques</h1>
+        <div class="product-grid" id="grid"></div>
+    </div>
+
+    <div id="details" class="view">
+        <button onclick="switchView('home')" style="color:var(--jaune); background:none; border:none; cursor:pointer; font-weight:bold; margin-bottom:20px;">← RETOUR</button>
+        <div id="details-body"></div>
+    </div>
+</div>
+
+<div id="cart-footer" class="cart-bar" style="display:none;">
+    <span>Total : <span id="cart-total">0</span> XOF</span>
+    <div style="display:flex; gap:10px;">
+        <input type="text" id="client-phone" placeholder="Ton N° WhatsApp" style="width:150px; margin:0; color:#000; background:#fff;">
+        <button onclick="validerCommande()" style="background:#000; color:#fff; border:none; padding:10px; border-radius:5px; font-weight:bold; cursor:pointer;">COMMANDER</button>
+    </div>
+</div>
+
+<script>
+    // BASE DE DONNÉES
+    let bdd = JSON.parse(localStorage.getItem('yupi_db')) || [
+        { id: 1, nom: "ALKA PLUS DROP", prix: 15500, img: "https://i.imgur.com/uXMOb6K.jpeg", bienfaits: ["Détoxifie", "pH Équilibré"], maladies: "Cancer, Diabète" }
+    ];
+    let panier = [];
+    let orders = JSON.parse(localStorage.getItem('yupi_orders')) || [];
+
+    // ROUTAGE : Si l'URL finit par ?admin
+    window.onload = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('admin')) {
+            switchView('admin-login');
+        } else {
+            renderBoutique();
+        }
+    };
+
+    // --- LOGIQUE CLIENT ---
+    function renderBoutique() {
+        document.getElementById('grid').innerHTML = bdd.map(p => `
+            <div class="card">
+                <img src="${p.img}">
+                <h3>${p.nom}</h3>
+                <div style="color:var(--jaune); font-weight:800; margin-bottom:10px;">${p.prix.toLocaleString()} XOF</div>
+                <button class="btn-roles-red" onclick="showDetails(${p.id})">RÔLES & BIENFAITS</button>
+            </div>
+        `).join('');
+    }
+
+    function showDetails(id) {
+        const p = bdd.find(x => x.id === id);
+        switchView('details');
+        document.getElementById('details-body').innerHTML = `
+            <img src="${p.img}" style="width:100%; border-radius:15px; border:2px solid var(--orange);">
+            <h1 style="color:var(--orange)">${p.nom}</h1>
+            <div class="bienfaits-list"><h3>Bienfaits :</h3><ul>${p.bienfaits.map(b => `<li>${b}</li>`).join('')}</ul></div>
+            <div class="maladies-box"><h3 style="color:var(--rouge)">MALADIES :</h3><p>${p.maladies}</p></div>
+            <button onclick="addToCart(${p.id})" style="background:var(--bleu); color:white; padding:20px; width:100%; border-radius:50px; border:none; font-weight:800; cursor:pointer;">AJOUTER AU PANIER</button>
+        `;
+    }
+
+    function addToCart(id) {
+        const p = bdd.find(x => x.id === id);
+        panier.push(p);
+        majCartUI();
+        alert("Produit ajouté !");
+    }
+
+    function majCartUI() {
+        const footer = document.getElementById('cart-footer');
+        if(panier.length > 0) {
+            footer.style.display = 'flex';
+            let total = panier.reduce((a, b) => a + b.prix, 0);
+            document.getElementById('cart-total').innerText = total.toLocaleString();
+        } else footer.style.display = 'none';
+    }
+
+    function validerCommande() {
+        const phone = document.getElementById('client-phone').value;
+        if(!phone) return alert("Entrez votre numéro de téléphone !");
+
+        const total = panier.reduce((a, b) => a + b.prix, 0);
+        const newOrder = { 
+            id: Date.now(), 
+            date: new Date().toLocaleString(), 
+            tel: phone, 
+            items: panier.map(i => i.nom).join(', '),
+            total: total 
+        };
+
+        orders.push(newOrder);
+        localStorage.setItem('yupi_orders', JSON.stringify(orders));
+
+        let msg = `Commande de ${phone} :\n` + panier.map(i => `- ${i.nom}`).join('\n') + `\nTotal: ${total} XOF`;
+        window.open(`https://wa.me/2290143718055?text=${encodeURIComponent(msg)}`);
+
+        panier = []; majCartUI(); switchView('home');
+    }
+
+    // --- LOGIQUE ADMIN ---
+    function verifyPass() {
+        if(document.getElementById('pass-field').value === "55237685Nn") {
+            switchView('admin-panel');
+            renderAdminPanel();
+        } else alert("Code incorrect !");
+    }
+
+    function renderAdminPanel() {
+        // Liste des commandes
+        document.getElementById('admin-orders').innerHTML = orders.slice().reverse().map(o => `
+            <div class="order-card">
+                <strong>📅 ${o.date}</strong> | 📱 Tel: ${o.tel}<br>
+                🛒 ${o.items}<br>
+                💰 Total: ${o.total.toLocaleString()} XOF
+            </div>
+        `).join('');
+
+        // Liste des produits pour modif/suppr
+        document.getElementById('admin-products-list').innerHTML = bdd.map(p => `
+            <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333;">
+                <span>${p.nom} (${p.prix} XOF)</span>
+                <div>
+                    <button class="btn-adm" style="background:var(--bleu); color:white" onclick="editProduct(${p.id})">Modifier</button>
+                    <button class="btn-adm btn-del" onclick="deleteProduct(${p.id})">Supprimer</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function saveProduct() {
+        const id = document.getElementById('edit-id').value;
+        const newP = {
+            id: id ? parseInt(id) : Date.now(),
+            nom: document.getElementById('adm-nom').value,
+            prix: parseInt(document.getElementById('adm-prix').value),
+            img: document.getElementById('adm-img').value,
+            bienfaits: document.getElementById('adm-roles').value.split(','),
+            maladies: document.getElementById('adm-maladies').value
+        };
+
+        if(id) {
+            const idx = bdd.findIndex(x => x.id == id);
+            bdd[idx] = newP;
+        } else {
+            bdd.push(newP);
+        }
+
+        localStorage.setItem('yupi_db', JSON.stringify(bdd));
+        resetForm();
+        renderAdminPanel();
+        renderBoutique();
+        alert("Enregistré !");
+    }
+
+    function editProduct(id) {
+        const p = bdd.find(x => x.id == id);
+        document.getElementById('edit-id').value = p.id;
+        document.getElementById('adm-nom').value = p.nom;
+        document.getElementById('adm-prix').value = p.prix;
+        document.getElementById('adm-img').value = p.img;
+        document.getElementById('adm-roles').value = p.bienfaits.join(',');
+        document.getElementById('adm-maladies').value = p.maladies;
+        document.getElementById('form-title').innerText = "Modifier le produit";
+        document.getElementById('btn-action').innerText = "SAUVEGARDER LES MODIFICATIONS";
+        window.scrollTo(0,0);
+    }
+
+    function deleteProduct(id) {
+        if(confirm("Supprimer ce produit ?")) {
+            bdd = bdd.filter(x => x.id != id);
+            localStorage.setItem('yupi_db', JSON.stringify(bdd));
+            renderAdminPanel();
+            renderBoutique();
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('edit-id').value = "";
+        document.getElementById('adm-nom').value = "";
+        document.getElementById('adm-prix').value = "";
+        document.getElementById('adm-img').value = "";
+        document.getElementById('adm-roles').value = "";
+        document.getElementById('adm-maladies').value = "";
+        document.getElementById('form-title').innerText = "Ajouter un Produit";
+        document.getElementById('btn-action').innerText = "AJOUTER LE PRODUIT";
+    }
+
+    function switchView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
